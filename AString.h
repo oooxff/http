@@ -4,10 +4,10 @@
 class AString {
     public:
         AString();
-        AString(char *);
+        AString(const char *);
         ~AString();
 
-        void append(char *_s);
+        void append(const char *_s);
         char *c_str(void);
     private:
         char *str;

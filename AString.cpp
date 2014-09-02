@@ -9,7 +9,7 @@ AString::AString(void)
     str[0] = 0;
 }
 
-AString::AString(char * _str) 
+AString::AString(const char * _str) 
 {
     this->append(_str);
 }
@@ -19,7 +19,7 @@ AString::~AString()
     free(str);
 }
 
-void AString::append(char *_str)
+void AString::append(const char *_str)
 {
     str = (char *)realloc(str, strlen(str) + strlen(_str) + 1);
 
