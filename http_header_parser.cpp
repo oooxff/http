@@ -7,14 +7,15 @@
 HTTPHeaderParser::HTTPHeaderParser(int fd)
     : mFd(fd),
       mLength(-1),
-      mInit(0) {
+      mInit(0),
+      mNum(-1) {
     }
 
 HTTPHeaderParser::~HTTPHeaderParser()
 {
 }
 
-char * HTTPHeaderParser::get_line(char *buf, int size)
+void HTTPHeaderParser::readLine(char *buf, int size)
 {
     char ch;
     int i = 0;
@@ -25,11 +26,9 @@ char * HTTPHeaderParser::get_line(char *buf, int size)
         } else {
             buf[i] = 0;
             read(mFd, &ch, sizeof(ch));
-            return buf;
+            break;
         }
     }
-
-    return NULL;
 }
 
 void HTTPHeaderParser::parser(void)
@@ -37,7 +36,7 @@ void HTTPHeaderParser::parser(void)
     char buffer[1024];
 
     while(1) {
-        get_line(buffer, sizeof(buffer));
+        readLine(buffer, sizeof(buffer));
 
         if (buffer[0] == 0)
             break;
@@ -45,8 +44,20 @@ void HTTPHeaderParser::parser(void)
         printf("[%s]\n", buffer);
         if (! strncmp(buffer, "Content-Length:", 15)) {
             sscanf(buffer, "Content-Length: %d", &mLength);
+        } else if (! strncmp(buffer, "HTTP/1.1", 8)) {
+            sscanf(buffer, "HTTP/1.1 %d OK", &mNum);
         }
     }
+}
+
+int HTTPHeaderParser::num(void)
+{
+    if(! mInit) {
+        parser();
+        mInit = 1;
+    }
+
+    return mNum;
 }
 
 int HTTPHeaderParser::length(void)
@@ -58,5 +69,4 @@ int HTTPHeaderParser::length(void)
 
     return mLength;
 }
-
 
