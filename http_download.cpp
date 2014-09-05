@@ -8,6 +8,7 @@
 #include "AString.h"
 #include "Socket.h"
 #include "http_header_parser.h"
+#include "http_url_parser.h"
 
 #include <iostream>
 
@@ -94,13 +95,20 @@ void HTTPDownLoader::download(void)
 
 int main(int argc, char *argv[])
 {
+#if 0
     int i;
 
     for (i = 1; i < argc; i ++) {
         HTTPDownLoader downloader(80, "10.0.0.201", argv[i]);
         downloader.download();
     }
-
+#endif
+    http_url_parser url_parser("http://www.example.com/test.webm?name=value");
+    cout << "scheme: " << url_parser.scheme() << endl;
+    cout << "host: " << url_parser.host() << endl;
+    cout << "port: " << url_parser.port() << endl;
+    cout << "path: " << url_parser.path() << endl;
+    cout << "searchpart: " << url_parser.searchpart() << endl;
     return 0;
 }
 
