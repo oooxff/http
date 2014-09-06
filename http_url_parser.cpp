@@ -5,7 +5,8 @@ http_url_parser::http_url_parser(const char *url)
     mPort(80),
     mHost(0),
     mPath(0),
-    mScheme(0) {
+    mScheme(0),
+    mHaveScheme(false) {
         parser();
     }
 
@@ -20,7 +21,7 @@ void http_url_parser::parser_url_with_port(void)
     char *url;
     char *port_pos;
 
-    url = mScheme? mURL + 7 : mURL;
+    url = mHaveScheme? mURL + 7 : mURL;
     port_pos = strchr(url, ':');
 
     mHost = (char *)malloc(port_pos - url + 1);
@@ -44,7 +45,7 @@ void http_url_parser::parser_url_without_port(void)
     char *tmp;
     char *pos;
 
-    tmp = mScheme? mURL + 7 : mURL;
+    tmp = mHaveScheme? mURL + 7 : mURL;
     pos = strchr(tmp, '/');
 
     if (! pos) {
@@ -66,7 +67,6 @@ void http_url_parser::parser(void)
     int i;
     char *tmp;
     bool have_port = false;
-    bool have_scheme = false;
 
     /*
      * URL example.
@@ -77,8 +77,8 @@ void http_url_parser::parser(void)
     mScheme = (char *)malloc(sizeof("http"));
     strcpy(mScheme, "http");
 
-    have_scheme = ! strncmp(mURL, "http://", 7);
-    tmp = have_scheme? mURL + 7 : mURL;
+    mHaveScheme = ! strncmp(mURL, "http://", 7);
+    tmp = mHaveScheme? mURL + 7 : mURL;
 
     for (i = 0; tmp[i] != '/' && tmp[i]; i ++) {
         if (tmp[i] == ':') {

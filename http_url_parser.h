@@ -27,6 +27,7 @@ class http_url_parser {
         char     *mHost;
         char     *mPath;
         char     *mScheme;
+        bool     mHaveScheme;
 };
 
 #endif //_HTTP_URL_PARSER_H_
