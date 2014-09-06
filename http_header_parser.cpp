@@ -35,19 +35,21 @@ void HTTPHeaderParser::parser(void)
 {
     char buffer[1024];
 
+    printf("S -> C: \n");
     while(1) {
         readLine(buffer, sizeof(buffer));
 
         if (buffer[0] == 0)
             break;
 
-        printf("[%s]\n", buffer);
+        printf("%s\n", buffer);
         if (! strncmp(buffer, "Content-Length:", 15)) {
             sscanf(buffer, "Content-Length: %d", &mLength);
         } else if (! strncmp(buffer, "HTTP/1.1", 8)) {
             sscanf(buffer, "HTTP/1.1 %d OK", &mNum);
         }
     }
+    putchar('\n');
 }
 
 int HTTPHeaderParser::num(void)

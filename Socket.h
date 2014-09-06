@@ -11,6 +11,7 @@
 
 class TCPSocket {
     public:
+        TCPSocket(const char *IP);
         TCPSocket(uint16_t port, const char *IP);
         ~TCPSocket();
 

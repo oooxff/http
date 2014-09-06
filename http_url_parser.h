@@ -15,17 +15,17 @@ class http_url_parser {
         uint16_t port(void) { return mPort; };
         const char *host(void) { return mHost;}
         const char *path(void) { return mPath; };
-        const char *searchpart(void) { return mSearchpart; };
         const char *scheme(void) { return mScheme; };
 
     private:
         void parser(void);
+        void parser_url_with_port(void);
+        void parser_url_without_port(void);
     private:
         char     *mURL;
         uint16_t mPort;
         char     *mHost;
         char     *mPath;
-        char     *mSearchpart;
         char     *mScheme;
 };
 

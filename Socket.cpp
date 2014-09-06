@@ -1,9 +1,16 @@
 #include "Socket.h"
 
-TCPSocket::TCPSocket(uint16_t port, const char *IP)
+TCPSocket::TCPSocket(const char *IP)
     : mFd(-1),
       mBackLog(1024),
       mPort(80) {
+          strcpy(mIP, IP);
+      }
+
+TCPSocket::TCPSocket(uint16_t port, const char *IP)
+    : mFd(-1),
+      mBackLog(1024),
+      mPort(port) {
           strcpy(mIP, IP);
       }
 

@@ -5,63 +5,91 @@ http_url_parser::http_url_parser(const char *url)
     mPort(80),
     mHost(0),
     mPath(0),
-    mSearchpart(0),
     mScheme(0) {
         parser();
     }
 
 http_url_parser::~http_url_parser()
 {
-    free(mURL); free(mHost); free(mPath);
-    free(mSearchpart); free(mScheme);
+    free(mURL); free(mHost); free(mPath); free(mScheme);
+}
+
+void http_url_parser::parser_url_with_port(void)
+{
+    char *pos;
+    char *url;
+    char *port_pos;
+
+    url = mScheme? mURL + 7 : mURL;
+    port_pos = strchr(url, ':');
+
+    mHost = (char *)malloc(port_pos - url + 1);
+    strncpy(mHost, url, port_pos - url);
+    mHost[port_pos - url] = 0;
+    mPort = atoi(port_pos + 1);
+
+    pos = strchr(url, '/');
+
+    if (! pos) {
+        mPath = (char *)malloc(2);
+        mPath[0] = '/'; mPath[1] = 0;
+    } else {
+        mPath = (char *)malloc(strlen(pos) + 1);
+        strcpy(mPath, pos);
+    }
+}
+
+void http_url_parser::parser_url_without_port(void)
+{
+    char *tmp;
+    char *pos;
+
+    tmp = mScheme? mURL + 7 : mURL;
+    pos = strchr(tmp, '/');
+
+    if (! pos) {
+        mHost = (char *)malloc(strlen(tmp) + 1);
+        strcpy(mHost, tmp);
+        mPath = (char *)malloc(2);
+        mPath[0] = '/'; mPath[1] = 0;
+    } else {
+        mHost = (char *)malloc(pos - tmp + 1);
+        strncpy(mHost, tmp, pos - tmp);
+        mHost[pos - tmp] = 0;
+        mPath = (char *)malloc(strlen(pos) + 1);
+        strcpy(mPath, pos);
+    }
 }
 
 void http_url_parser::parser(void)
 {
-    int i = 0;
-    char *ret;
+    int i;
+    char *tmp;
+    bool have_port = false;
+    bool have_scheme = false;
+
     /*
      * URL example.
      * http://<host>:<port>/<path>?<searchpart>
+     * http://10.0.0.201/video/mp4/test.mp4?id=1&ts=10000
      */
 
     mScheme = (char *)malloc(sizeof("http"));
     strcpy(mScheme, "http");
 
-    bool have_scheme = ! strncmp(mURL, "http://", 7);
+    have_scheme = ! strncmp(mURL, "http://", 7);
+    tmp = have_scheme? mURL + 7 : mURL;
 
-    mURL = have_scheme? mURL + 7 : mURL;
-
-    while((ret = strsep(&mURL, "/")) != NULL) {
-        if (i == 0) {
-            int m = 0;
-            char *r;
-
-            while((r = strsep(&ret, ":")) != NULL) {
-                if (m == 0) {
-                    mHost = (char *)malloc(strlen(r) + 1);
-                    strcpy(mHost, r); m ++;
-                } else if (m == 1) {
-                    mPort = atoi(r); m ++;
-                }
-            }
-
-            i ++;
-        } else if (i == 1) {
-            int n = 0;
-            char *r;
-
-            while((r = strsep(&ret, "?")) != NULL) {
-                if (n == 0) {
-                    mPath = (char *)malloc(strlen(r) + 1);
-                    strcpy(mPath, r); n ++;
-                } else if (n == 1) {
-                    mSearchpart = (char *)malloc(strlen(r) + 1);
-                    strcpy(mSearchpart, r); n ++;
-                }
-            }
-
-            i ++;
+    for (i = 0; tmp[i] != '/' && tmp[i]; i ++) {
+        if (tmp[i] == ':') {
+            have_port = true;
+            break;
         }
+    }
+
+    if (have_port) {
+        parser_url_with_port();
+    } else {
+        parser_url_without_port();
     }
 }
