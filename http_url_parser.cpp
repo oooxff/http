@@ -19,6 +19,7 @@ http_url_parser::~http_url_parser()
 void http_url_parser::parser(void)
 {
     int i = 0;
+    char *ret;
     /*
      * URL example.
      * http://<host>:<port>/<path>?<searchpart>
@@ -30,8 +31,6 @@ void http_url_parser::parser(void)
     bool have_scheme = ! strncmp(mURL, "http://", 7);
 
     mURL = have_scheme? mURL + 7 : mURL;
-
-    char *ret;
 
     while((ret = strsep(&mURL, "/")) != NULL) {
         if (i == 0) {

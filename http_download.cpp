@@ -17,23 +17,22 @@ using namespace std;
 
 class HTTPDownLoader {
     public:
-        HTTPDownLoader(uint16_t port, const char *IP, char *file);
+        HTTPDownLoader(uint16_t port, const char *IP, const char *file);
         ~HTTPDownLoader();
 
         void download(void);
         void save_as_file(int fd, int size);
     private:
         AString *mStr;
-        char *mFile;
+        const char *mFile;
         TCPSocket  *mSocket;
 };
 
-HTTPDownLoader::HTTPDownLoader(uint16_t port, const char *IP, char *file)
-{
+HTTPDownLoader::HTTPDownLoader(uint16_t port, const char *IP, const char *file)
+    : mFile(file) {
     mStr = new AString();
     mSocket = new TCPSocket(port, IP);
     mSocket->open();
-    mFile = file;
 }
 
 HTTPDownLoader::~HTTPDownLoader()
@@ -93,22 +92,19 @@ void HTTPDownLoader::download(void)
     save_as_file(fd, parser.length());
 }
 
+void url_download(const char *url)
+{
+    http_url_parser url_parser(url);
+    HTTPDownLoader downloader(url_parser.port(), url_parser.host(), url_parser.path());
+}
 int main(int argc, char *argv[])
 {
-#if 0
     int i;
 
     for (i = 1; i < argc; i ++) {
-        HTTPDownLoader downloader(80, "10.0.0.201", argv[i]);
-        downloader.download();
+        url_download(argv[i]);
     }
-#endif
-    http_url_parser url_parser("http://www.example.com/test.webm?name=value");
-    cout << "scheme: " << url_parser.scheme() << endl;
-    cout << "host: " << url_parser.host() << endl;
-    cout << "port: " << url_parser.port() << endl;
-    cout << "path: " << url_parser.path() << endl;
-    cout << "searchpart: " << url_parser.searchpart() << endl;
+
     return 0;
 }
 

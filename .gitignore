@@ -22,3 +22,4 @@
 app
 *.webm
 *.mp4
+*.dSYM
