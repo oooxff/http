@@ -21,7 +21,6 @@ class TCPSocket {
         void close();
     private:
         int mFd;
-        int mBackLog;
         uint16_t mPort;
         char mIP[16];
 };

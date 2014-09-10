@@ -51,7 +51,11 @@ HTTPDownLoader::~HTTPDownLoader()
 
 void HTTPDownLoader::show_download_percent(ssize_t rn, int size)
 {
+#if __x86_64__
+    printf("Downloading: %02ld%%\r", 100 * rn / size);
+#else
     printf("Downloading: %02d%%\r", 100 * rn / size);
+#endif
 }
 
 void HTTPDownLoader::save_as_file(int fd, int size)
