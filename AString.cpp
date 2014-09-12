@@ -11,7 +11,8 @@ AString::AString(void)
 
 AString::AString(const char * _str) 
 {
-    this->append(_str);
+    str = (char *)malloc(strlen(_str) + 1);
+    strcpy(str, _str);
 }
 
 AString::~AString()
