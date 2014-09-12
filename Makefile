@@ -1,4 +1,7 @@
+SRC = \
+	AString.cpp  http_download.cpp  http_header_parser.cpp  http_send_request.cpp  http_url_parser.cpp  main.cpp Socket.cpp
+
 all :
-	g++ *.cpp -g -Wall -o app
+	g++ ${SRC} -g -Wall -o app
 clean:
 	rm -rf app.dSYM app
