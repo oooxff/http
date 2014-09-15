@@ -1,3 +1,7 @@
+#include "utils.h"
+#include <assert.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 #include "http_url_parser.h"
 
 http_url_parser::http_url_parser(const char *url)
@@ -62,6 +66,34 @@ void http_url_parser::parser_url_without_port(void)
     }
 }
 
+bool http_url_parser::is_host_ip(void)
+{
+    int i;
+
+    for (i = 0; mHost[i]; i ++) {
+        if (mHost[i] != '.' && (! Utils::is_digit(mHost[i]))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void http_url_parser::parser_host_ip(void)
+{
+    struct in_addr ip;
+    struct hostent *host;
+
+    host = gethostbyname(mHost);
+    assert(host);
+    
+    printf("h_name: %s\n", host->h_name);
+    bcopy(host->h_addr, &(ip.s_addr), host->h_length);
+    printf("IP: %s\n", inet_ntoa(ip));
+    mHostIP = (char *)malloc(16);
+    strcpy(mHostIP, inet_ntoa(ip));
+}
+
 void http_url_parser::parser(void)
 {
     int i;
@@ -91,5 +123,9 @@ void http_url_parser::parser(void)
         parser_url_with_port();
     } else {
         parser_url_without_port();
+    }
+
+    if(! is_host_ip()) {
+        parser_host_ip();
     }
 }

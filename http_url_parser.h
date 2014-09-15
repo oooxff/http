@@ -14,6 +14,7 @@ class http_url_parser {
         bool isValide(void) { return true; };
         uint16_t port(void) { return mPort; };
         const char *host(void) { return mHost;}
+        const char *host_ip(void) { return mHostIP;}
         const char *path(void) { return mPath; };
         const char *scheme(void) { return mScheme; };
 
@@ -21,10 +22,13 @@ class http_url_parser {
         void parser(void);
         void parser_url_with_port(void);
         void parser_url_without_port(void);
+        void parser_host_ip(void);
+        bool is_host_ip(void);
     private:
         char     *mURL;
         uint16_t mPort;
         char     *mHost;
+        char     *mHostIP;
         char     *mPath;
         char     *mScheme;
         bool     mHaveScheme;
