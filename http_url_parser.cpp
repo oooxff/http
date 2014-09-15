@@ -16,7 +16,7 @@ http_url_parser::http_url_parser(const char *url)
 
 http_url_parser::~http_url_parser()
 {
-    free(mURL); free(mHost); free(mPath); free(mScheme);
+    free(mURL); free(mHost); free(mPath); free(mScheme); free(mHostIP);
 }
 
 void http_url_parser::parser_url_with_port(void)
@@ -127,5 +127,8 @@ void http_url_parser::parser(void)
 
     if(! is_host_ip()) {
         parser_host_ip();
+    } else {
+        mHostIP = (char *)malloc(16);
+        strcpy(mHostIP, mHost);
     }
 }
