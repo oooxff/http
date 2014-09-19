@@ -4,4 +4,4 @@ SRC = \
 all :
 	g++ ${SRC} -g -Wall -o app
 clean:
-	rm -rf app.dSYM app
+	rm -rf app.dSYM app *.o
